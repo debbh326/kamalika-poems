@@ -1,0 +1,25 @@
+# Site name, poet's name and the "about" text live in _data/about.yml,
+# so they can be changed from the phone (admin page → "খাতার পরিচয়").
+
+lang: bn
+timezone: Asia/Kolkata
+
+# Show a poem even if its date/time is a few minutes ahead of the build server.
+future: true
+
+collections:
+  poems:
+    output: true
+    permalink: /kobita/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: poems
+    values:
+      layout: poem
+
+# Keep the setup notes off the public website.
+exclude:
+  - README.md
+  - GUIDE-bn.md

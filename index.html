@@ -1,0 +1,35 @@
+---
+layout: default
+---
+{%- assign about = site.data.about -%}
+{%- comment -%} Jekyll already orders poems by date, then by file name (the save time). {%- endcomment -%}
+{%- assign poems = site.poems | reverse -%}
+{%- capture nl %}
+{% endcapture -%}
+<header class="cover">
+  <h1 class="site-title">{{ about.site_title }}</h1>
+  <p class="poet">{{ about.poet_name }}</p>
+  {%- if about.about and about.about != "" %}
+  <p class="about">{{ about.about | strip | escape }}</p>
+  {%- endif %}
+</header>
+
+{% if poems.size > 0 -%}
+<ul class="poem-list">
+  {%- for p in poems %}
+  {%- if p.poem %}{% assign src = p.poem %}{% else %}{% assign src = p.content | strip_html %}{% endif %}
+  {%- assign lines = src | strip | split: nl %}
+  <li>
+    <a href="{{ p.url | relative_url }}">
+      <h2>{{ p.title }}</h2>
+      <p class="date"><time datetime="{{ p.date | date_to_xmlschema }}">{% include bn-date.html date=p.date %}</time></p>
+      <p class="first-lines">
+        {%- for line in lines limit: 2 %}{% assign l = line | strip %}{% if l != "" %}{{ l | escape }}<br>{% endif %}{% endfor -%}
+      </p>
+    </a>
+  </li>
+  {%- endfor %}
+</ul>
+{%- else -%}
+<p class="empty">এখনও কোনো কবিতা নেই। <a href="{{ '/admin/' | relative_url }}">প্রথম কবিতাটি লিখুন</a></p>
+{%- endif %}

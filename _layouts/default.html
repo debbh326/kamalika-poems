@@ -1,0 +1,55 @@
+{%- assign about = site.data.about -%}
+{%- capture nl %}
+{% endcapture -%}
+{%- if page.poem -%}
+  {%- assign first_lines = page.poem | strip | split: nl -%}
+  {%- capture desc -%}{% for l in first_lines limit: 3 %}{{ l | strip }}{% unless forloop.last %} / {% endunless %}{% endfor %}{%- endcapture -%}
+{%- else -%}
+  {%- assign desc = about.about | default: about.site_title -%}
+{%- endif -%}
+{%- if page.title -%}
+  {%- capture full_title -%}{{ page.title }} | {{ about.site_title }}{%- endcapture -%}
+{%- else -%}
+  {%- assign full_title = about.site_title -%}
+{%- endif -%}
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ full_title | escape }}</title>
+  <meta name="description" content="{{ desc | strip | replace: nl, ' ' | escape }}">
+  <meta property="og:type" content="{% if page.poem %}article{% else %}website{% endif %}">
+  <meta property="og:site_name" content="{{ about.site_title | escape }}">
+  <meta property="og:title" content="{{ page.title | default: about.site_title | escape }}">
+  <meta property="og:description" content="{{ desc | strip | replace: nl, ' ' | escape }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:image" content="{{ '/assets/icon-512.png' | absolute_url }}">
+  <meta name="theme-color" content="#A51C24" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#151B2E" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="{{ '/assets/icon.svg' | relative_url }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ '/assets/apple-touch-icon.png' | relative_url }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap">
+  <link rel="stylesheet" href="{{ '/assets/kobita.css' | relative_url }}">
+</head>
+<body>
+  <div class="paar" aria-hidden="true"></div>
+
+  {% unless page.url == "/" -%}
+  <header class="masthead">
+    <a class="home-link" href="{{ '/' | relative_url }}">{{ about.site_title }}</a>
+  </header>
+  {%- endunless %}
+
+  <main>
+    {{ content }}
+  </main>
+
+  <footer class="colophon">
+    <p>© {{ site.time | date: "%Y" | replace: "0", "০" | replace: "1", "১" | replace: "2", "২" | replace: "3", "৩" | replace: "4", "৪" | replace: "5", "৫" | replace: "6", "৬" | replace: "7", "৭" | replace: "8", "৮" | replace: "9", "৯" }} {{ about.poet_name }}। সর্বস্বত্ব সংরক্ষিত।</p>
+  </footer>
+  <div class="paar paar-foot" aria-hidden="true"></div>
+</body>
+</html>

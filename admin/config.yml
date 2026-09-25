@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+#
+# The writing screen at  <your-site>/admin/
+# Only the two lines marked ✏️ need changing.
+
+backend:
+  name: github
+  repo: YOUR-GITHUB-USERNAME/YOUR-REPO-NAME   # ✏️ e.g. debankit/maa-kobita
+  branch: main
+  auth_methods: [token]                        # one sign-in button, nothing else
+
+display_url: https://YOUR-GITHUB-USERNAME.github.io/YOUR-REPO-NAME/   # ✏️ "view site" link
+
+app_title: কবিতার খাতা
+
+media_folder: assets/uploads
+public_folder: /assets/uploads
+
+slug:
+  timezone: local
+
+editor:
+  preview: false   # just the writing form, no side-by-side preview on a small screen
+
+collections:
+  - name: poems
+    label: কবিতা (Poems)
+    label_singular: কবিতা (Poem)
+    description: নতুন কবিতা লিখতে “New” টিপুন। লেখা শেষ হলে “Save” টিপুন।
+    icon: edit_note
+    folder: _poems
+    extension: md
+    format: yaml-frontmatter
+    slug:
+      template: "{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}"
+      editable: false
+    summary: "{{title}}"
+    sortable_fields:
+      fields: [date, title]
+      default:
+        field: date
+        direction: descending
+    fields:
+      - name: title
+        label: কবিতার নাম (Title)
+        widget: string
+      - name: poem
+        label: কবিতা (Poem)
+        widget: text
+        use_emoji_autocomplete: false
+        hint: যেমন লিখবেন, লাইনগুলো ঠিক তেমনই দেখাবে। দুটো স্তবকের মাঝে একটা ফাঁকা লাইন রাখুন।
+      - name: date
+        label: তারিখ (Date)
+        widget: datetime
+        type: date
+        format: YYYY-MM-DD
+        default: "{{now}}"
+        hint: আজকের তারিখ নিজে থেকেই বসে যায়। পুরনো খাতার কবিতা হলে সেই তারিখটা দিন।
+
+singletons:
+  - name: about
+    label: খাতার পরিচয় (About)
+    icon: person
+    file: _data/about.yml
+    format: yaml
+    fields:
+      - name: site_title
+        label: খাতার নাম (Site name)
+        widget: string
+      - name: poet_name
+        label: আপনার নাম (Your name)
+        widget: string
+      - name: about
+        label: নিজের কথা (A few lines about you)
+        widget: text
+        required: false
+        use_emoji_autocomplete: false

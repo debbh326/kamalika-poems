@@ -1,0 +1,333 @@
+/* কবিতার খাতা
+   Cotton-white page, the red border of a laal-paar saree along the top and
+   bottom, blue-black fountain-pen ink for the words, kantha running
+   stitches between poems. */
+
+:root {
+  --paper: #fafaf6;
+  --ink: #1d2b53;
+  --ink-soft: #59627f;
+  --alta: #a51c24;
+  --rule: #e3e0d6;
+  --measure: 34rem;
+  --bangla: "Tiro Bangla", "Noto Serif Bengali", "Kohinoor Bangla",
+    "Bangla Sangam MN", "Vrinda", serif;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #151b2e;
+    --ink: #ece8de;
+    --ink-soft: #a3aac2;
+    --alta: #d9545b;
+    --rule: #2b3452;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--bangla);
+  font-size: 1.1875rem; /* Bengali conjuncts need a little more room than Latin */
+  line-height: 1.75;
+}
+
+main {
+  flex: 1;
+}
+
+main,
+.masthead,
+.colophon {
+  width: 100%;
+  max-width: calc(var(--measure) + 3rem);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+::selection {
+  background: var(--alta);
+  color: var(--paper);
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--alta);
+  text-underline-offset: 0.22em;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--alta);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---- The saree border ------------------------------------------------ */
+
+.paar {
+  position: relative;
+  flex: none;
+  height: 12px;
+  margin-bottom: 30px;
+  background: var(--alta);
+}
+
+.paar::before,
+.paar::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+}
+
+/* thin second line */
+.paar::before {
+  top: 16px;
+  height: 2px;
+  background: var(--alta);
+}
+
+/* row of small temple triangles hanging from the line */
+.paar::after {
+  top: 18px;
+  height: 7px;
+  background:
+    linear-gradient(135deg, var(--alta) 25%, transparent 25%) 0 0 / 14px 14px repeat-x,
+    linear-gradient(225deg, var(--alta) 25%, transparent 25%) 0 0 / 14px 14px repeat-x;
+}
+
+.paar-foot {
+  margin: 30px 0 0;
+  transform: scaleY(-1);
+}
+
+/* ---- Kantha stitch ----------------------------------------------------- */
+
+.stitch,
+.poem-list li::before,
+.empty::before {
+  content: "";
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, var(--alta) 0 9px, transparent 9px 16px) 0 0 / 16px 2px repeat-x;
+  opacity: 0.8;
+}
+
+/* ---- Home -------------------------------------------------------------- */
+
+.cover {
+  padding: 0.5rem 0 2.25rem;
+}
+
+.site-title {
+  margin: 0;
+  font-size: clamp(2.6rem, 12vw, 3.9rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--alta);
+}
+
+.poet {
+  margin: 0.6rem 0 0;
+  font-size: 1.3rem;
+}
+
+.about {
+  max-width: 30rem;
+  margin: 1rem 0 0;
+  color: var(--ink-soft);
+  white-space: pre-line;
+}
+
+.poem-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.poem-list a {
+  display: block;
+  padding: 1.4rem 0 1.5rem;
+  text-decoration: none;
+}
+
+.poem-list h2 {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.poem-list a:hover h2 {
+  color: var(--alta);
+}
+
+.date,
+.poem-date {
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.poem-list .date {
+  margin: 0.1rem 0 0;
+}
+
+.first-lines {
+  margin: 0.55rem 0 0;
+  color: var(--ink-soft);
+  line-height: 1.85;
+}
+
+.empty {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.empty::before {
+  margin-bottom: 1.5rem;
+}
+
+/* ---- A single poem ----------------------------------------------------- */
+
+.masthead {
+  padding-top: 0.25rem;
+}
+
+.home-link {
+  color: var(--alta);
+  font-size: 1.125rem;
+  text-decoration: none;
+}
+
+.home-link:hover {
+  text-decoration: underline;
+}
+
+.poem {
+  padding: 1.75rem 0 0.5rem;
+}
+
+.poem-title {
+  margin: 0;
+  font-size: clamp(2rem, 8vw, 2.7rem);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.poem-date {
+  margin: 0.4rem 0 1.4rem;
+}
+
+.poem .stitch {
+  width: 5.5rem;
+  margin-bottom: 1.9rem;
+}
+
+.poem-text {
+  font-size: 1.25rem;
+  line-height: 2;
+  white-space: pre-line; /* keep her line breaks and stanza gaps exactly */
+  overflow-wrap: anywhere;
+}
+
+.poem-md {
+  white-space: normal;
+}
+
+.poem-md p {
+  margin: 0 0 2em;
+  white-space: pre-line;
+}
+
+.share {
+  min-height: 48px;
+  margin-top: 2.5rem;
+  padding: 0.5rem 1.35rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.0625rem;
+  cursor: pointer;
+}
+
+.share:hover {
+  border-color: var(--alta);
+  color: var(--alta);
+}
+
+.share:active {
+  transform: translateY(1px);
+}
+
+.more {
+  display: grid;
+  margin-top: 3rem;
+  border-top: 1px solid var(--rule);
+}
+
+.more a {
+  display: block;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  line-height: 1.5;
+}
+
+.more a:hover {
+  color: var(--alta);
+}
+
+.more small {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+@media (min-width: 40rem) {
+  .more {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2rem;
+  }
+
+  .more .next {
+    grid-column: 2;
+    text-align: end;
+  }
+}
+
+/* ---- Footer ------------------------------------------------------------ */
+
+.colophon {
+  padding-top: 3.5rem;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.colophon p {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share:active {
+    transform: none;
+  }
+}
