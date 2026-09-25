@@ -5,11 +5,11 @@
 
 backend:
   name: github
-  repo: YOUR-GITHUB-USERNAME/YOUR-REPO-NAME   # ✏️ e.g. debankit/maa-kobita
+  repo: debbh326/mummy-poems  # ✏️ e.g. debankit/maa-kobita
   branch: main
   auth_methods: [token]                        # one sign-in button, nothing else
 
-display_url: https://YOUR-GITHUB-USERNAME.github.io/YOUR-REPO-NAME/   # ✏️ "view site" link
+display_url: https://debbh326.github.io/mummy-poems/   # ✏️ "view site" link
 
 app_title: কবিতার খাতা
 
