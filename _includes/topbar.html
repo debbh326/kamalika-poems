@@ -1,0 +1,30 @@
+{%- comment -%} Needs pg_section, pg_title and pg_lang from the default layout. {%- endcomment -%}
+<header class="topbar">
+  <div class="topbar-inner">
+    <button class="icon-btn menu-btn" type="button" data-menu aria-controls="sidebar" aria-expanded="false" aria-label="Open menu">{% include icon.html name="menu" %}</button>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      {%- if page.url == "/" -%}
+      <span aria-current="page">Home</span>
+      {%- else -%}
+      <a href="{{ '/' | relative_url }}">Home</a>
+      {%- if pg_section and pg_section.url != page.url %}
+      <a href="{{ pg_section.url | relative_url }}">{{ pg_section.en_plural }}</a>
+      {%- endif %}
+      <span aria-current="page" lang="{{ pg_lang }}">{{ pg_title | escape }}</span>
+      {%- endif -%}
+    </nav>
+
+    <p class="topbar-title" lang="{{ pg_lang }}">{% if page.url == "/" %}Home{% else %}{{ pg_title | escape }}{% endif %}</p>
+
+    <button class="icon-btn search-open" type="button" data-search-open aria-label="Search">{% include icon.html name="search" %}</button>
+
+    <form class="search" role="search" action="{{ '/archives/' | relative_url }}" data-search-form>
+      <label class="search-box">
+        {% include icon.html name="search" %}
+        <input id="search-input" type="search" name="q" placeholder="Search… খুঁজুন" aria-label="Search poems and stories" autocomplete="off" spellcheck="false">
+      </label>
+      <button class="search-cancel" type="button" data-search-cancel>Cancel</button>
+    </form>
+  </div>
+</header>

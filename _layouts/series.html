@@ -1,0 +1,47 @@
+---
+layout: default
+---
+{%- assign sr_lang = page.lang | default: "bn" -%}
+{%- assign sr_language = site.languages[sr_lang] -%}
+{%- assign sr_parts = site.parts | where: "series", page.title | sort: "part" -%}
+<article class="piece series" lang="{{ sr_lang }}">
+  <header class="piece-head">
+    <p class="overline" lang="en"><a href="{{ '/series/' | relative_url }}">Story Series</a></p>
+    <h1 class="piece-title">{{ page.title | escape }}</h1>
+    {%- if sr_lang != "en" and page.title_en and page.title_en != "" and page.title_en != page.title %}
+    <p class="piece-subtitle" lang="en">{{ page.title_en | escape }}</p>
+    {%- endif %}
+    <div class="meta" lang="en">
+      <span>{% include icon.html name="layers" %}{{ sr_parts.size }} {% if sr_parts.size == 1 %}part{% else %}parts{% endif %}</span>
+      {%- if sr_parts.size > 0 %}
+      {%- assign sr_latest = sr_parts | sort: "date" | last %}
+      <span>{% include icon.html name="calendar" %}Latest <time datetime="{{ sr_latest.date | date_to_xmlschema }}">{{ sr_latest.date | date: "%b %-d, %Y" }}</time></span>
+      {%- endif %}
+      <span class="lang-tag"><span lang="{{ sr_lang }}">{{ sr_language.name }}</span></span>
+    </div>
+  </header>
+
+  {%- if page.about and page.about != "" %}
+  <div class="piece-body prose series-about"><p>{{ page.about | strip | escape | newline_to_br }}</p></div>
+  {%- endif %}
+
+  {%- if sr_parts.size > 0 %}
+  <p><a class="button" href="{{ sr_parts.first.url | relative_url }}" lang="en">Start reading{% include icon.html name="arrow-right" %}</a></p>
+
+  <h2 class="section-heading" lang="en">All parts</h2>
+  <ol class="part-list">
+    {%- for sr_part in sr_parts %}
+    {%- include doc-info.html doc=sr_part %}
+    <li>
+      <a href="{{ sr_part.url | relative_url }}">
+        <span class="part-name">{{ doc_part | escape }}</span>
+        <span class="part-excerpt">{% include excerpt.html doc=sr_part words=24 %}</span>
+        <time lang="en" datetime="{{ sr_part.date | date_to_xmlschema }}">{{ sr_part.date | date: "%b %-d, %Y" }}</time>
+      </a>
+    </li>
+    {%- endfor %}
+  </ol>
+  {%- else %}
+  <p class="empty" lang="en">The first part is on its way.</p>
+  {%- endif %}
+</article>

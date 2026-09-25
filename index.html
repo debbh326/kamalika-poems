@@ -1,35 +1,17 @@
 ---
 layout: default
 ---
-{%- assign about = site.data.about -%}
-{%- comment -%} Jekyll already orders poems by date, then by file name (the save time). {%- endcomment -%}
-{%- assign poems = site.poems | reverse -%}
-{%- capture nl %}
-{% endcapture -%}
-<header class="cover">
-  <h1 class="site-title">{{ about.site_title }}</h1>
-  <p class="poet">{{ about.poet_name }}</p>
-  {%- if about.about and about.about != "" %}
-  <p class="about">{{ about.about | strip | escape }}</p>
-  {%- endif %}
-</header>
-
-{% if poems.size > 0 -%}
-<ul class="poem-list">
-  {%- for p in poems %}
-  {%- if p.poem %}{% assign src = p.poem %}{% else %}{% assign src = p.content | strip_html %}{% endif %}
-  {%- assign lines = src | strip | split: nl %}
-  <li>
-    <a href="{{ p.url | relative_url }}">
-      <h2>{{ p.title }}</h2>
-      <p class="date"><time datetime="{{ p.date | date_to_xmlschema }}">{% include bn-date.html date=p.date %}</time></p>
-      <p class="first-lines">
-        {%- for line in lines limit: 2 %}{% assign l = line | strip %}{% if l != "" %}{{ l | escape }}<br>{% endif %}{% endfor -%}
-      </p>
-    </a>
-  </li>
-  {%- endfor %}
-</ul>
-{%- else -%}
-<p class="empty">এখনও কোনো কবিতা নেই। <a href="{{ '/admin/' | relative_url }}">প্রথম কবিতাটি লিখুন</a></p>
+{%- include writings.html -%}
+{%- assign home_limit = 10 -%}
+{%- assign home_docs = "" | split: "" -%}
+{%- for home_doc in writings limit: home_limit -%}
+  {%- assign home_docs = home_docs | push: home_doc -%}
+{%- endfor -%}
+{%- capture home_empty -%}
+Nothing here yet. <a href="{{ '/admin/' | relative_url }}">Write the first piece</a> <span lang="bn">· এখনও কিছু লেখা হয়নি।</span>
+{%- endcapture -%}
+<h1 class="visually-hidden">Latest writing</h1>
+{% include card-list.html docs=home_docs empty=home_empty %}
+{%- if writings.size > home_limit %}
+<p class="more-link"><a href="{{ '/archives/' | relative_url }}">See all {{ writings.size }} pieces{% include icon.html name="arrow-right" %}</a></p>
 {%- endif %}

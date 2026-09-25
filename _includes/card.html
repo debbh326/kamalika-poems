@@ -1,0 +1,15 @@
+{%- include doc-info.html doc=include.doc -%}
+<article class="card" data-lang="{{ doc_lang }}" data-kind="{{ include.doc.collection }}">
+  <a class="card-link" href="{{ include.doc.url | relative_url }}">
+    <h2 class="card-title"><span lang="{{ doc_lang }}">{{ doc_heading | escape }}</span>{% if doc_heading_en %} <span class="title-en" lang="en">{{ doc_heading_en | escape }}</span>{% endif %}</h2>
+    {%- if doc_part %}
+    <p class="card-part" lang="{{ doc_lang }}">{{ doc_part | escape }}</p>
+    {%- endif %}
+    <p class="card-excerpt" lang="{{ doc_lang }}">{% include excerpt.html doc=include.doc %}</p>
+    <div class="meta">
+      <span>{% include icon.html name="calendar" %}<time datetime="{{ include.doc.date | date_to_xmlschema }}">{{ include.doc.date | date: "%b %-d, %Y" }}</time></span>
+      <span>{% include icon.html name="folder" %}{{ doc_kind.en }}</span>
+      <span class="lang-tag" lang="{{ doc_lang }}">{{ doc_language.name }}</span>
+    </div>
+  </a>
+</article>

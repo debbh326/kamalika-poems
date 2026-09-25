@@ -1,17 +1,17 @@
 # yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
 #
 # The writing screen at  <your-site>/admin/
-# Only the two lines marked ✏️ need changing.
+# Only the two lines marked ✏️ would ever need changing (e.g. if the repo is renamed).
 
 backend:
   name: github
-  repo: debbh326/kamalika-poems  # ✏️ e.g. debankit/maa-kobita
+  repo: debbh326/kamalika-poems  # ✏️
   branch: main
   auth_methods: [token]                        # one sign-in button, nothing else
 
 display_url: https://debbh326.github.io/kamalika-poems/   # ✏️ "view site" link
 
-app_title: কবিতার খাতা
+app_title: লেখার খাতা
 
 media_folder: assets/uploads
 public_folder: /assets/uploads
@@ -19,10 +19,14 @@ public_folder: /assets/uploads
 slug:
   timezone: local
 
+output:
+  omit_empty_optional_fields: true   # skipped optional boxes leave nothing behind in the file
+
 editor:
   preview: false   # just the writing form, no side-by-side preview on a small screen
 
 collections:
+  # ---- Poems -------------------------------------------------------------
   - name: poems
     label: কবিতা (Poems)
     label_singular: কবিতা (Poem)
@@ -40,10 +44,21 @@ collections:
       default:
         field: date
         direction: descending
+    view_filters:
+      - { name: bn, label: বাংলা, field: lang, pattern: bn }
+      - { name: en, label: English, field: lang, pattern: en }
     fields:
       - name: title
         label: কবিতার নাম (Title)
         widget: string
+      - name: lang
+        label: ভাষা (Language)
+        widget: select
+        options:
+          - { label: বাংলা, value: bn }
+          - { label: English, value: en }
+        default: bn
+        hint: কবিতাটা কোন ভাষায় লেখা?
       - name: poem
         label: কবিতা (Poem)
         widget: text
@@ -56,6 +71,152 @@ collections:
         format: YYYY-MM-DD
         default: "{{now}}"
         hint: আজকের তারিখ নিজে থেকেই বসে যায়। পুরনো খাতার কবিতা হলে সেই তারিখটা দিন।
+      - name: title_en
+        label: ইংরেজিতে নাম (English title) — না লিখলেও চলবে
+        widget: string
+        required: false
+        hint: যাঁরা বাংলা পড়তে পারেন না, তাঁদের জন্য নামের পাশে ছোট করে দেখাবে। শুধু বাংলা কবিতার জন্য।
+
+  # ---- Short stories ------------------------------------------------------
+  - name: stories
+    label: ছোটগল্প (Short Stories)
+    label_singular: ছোটগল্প (Short Story)
+    description: এক বসায় শেষ হওয়া গল্প। নতুন গল্প লিখতে “New” টিপুন।
+    icon: auto_stories
+    folder: _stories
+    extension: md
+    format: yaml-frontmatter
+    slug:
+      template: "{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}"
+      editable: false
+    summary: "{{title}}"
+    sortable_fields:
+      fields: [date, title]
+      default:
+        field: date
+        direction: descending
+    view_filters:
+      - { name: bn, label: বাংলা, field: lang, pattern: bn }
+      - { name: en, label: English, field: lang, pattern: en }
+    fields:
+      - name: title
+        label: গল্পের নাম (Title)
+        widget: string
+      - name: lang
+        label: ভাষা (Language)
+        widget: select
+        options:
+          - { label: বাংলা, value: bn }
+          - { label: English, value: en }
+        default: bn
+        hint: গল্পটা কোন ভাষায় লেখা?
+      - name: story
+        label: গল্প (Story)
+        widget: text
+        use_emoji_autocomplete: false
+        hint: প্রতিটা অনুচ্ছেদের শেষে Enter টিপুন।
+      - name: date
+        label: তারিখ (Date)
+        widget: datetime
+        type: date
+        format: YYYY-MM-DD
+        default: "{{now}}"
+      - name: title_en
+        label: ইংরেজিতে নাম (English title) — না লিখলেও চলবে
+        widget: string
+        required: false
+        hint: যাঁরা বাংলা পড়তে পারেন না, তাঁদের জন্য। শুধু বাংলা গল্পের জন্য।
+
+  - divider: true
+
+  # ---- Story series: one entry per part ------------------------------------
+  - name: parts
+    label: "ধারাবাহিক — পর্ব (Series: Parts)"
+    label_singular: পর্ব (Part)
+    description: >-
+      ধারাবাহিকের নতুন পর্ব লিখতে “New” টিপুন। একদম নতুন ধারাবাহিক শুরু করছেন?
+      তাহলে আগে নিচের “ধারাবাহিক — নাম”-এ গল্পের নামটা একবার লিখে Save করুন।
+    icon: library_books
+    folder: _parts
+    extension: md
+    format: yaml-frontmatter
+    identifier_field: series
+    slug:
+      template: "{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}"
+      editable: false
+    summary: "{{series}} · পর্ব {{part}}"
+    sortable_fields:
+      fields: [date, part]
+      default:
+        field: date
+        direction: descending
+    view_groups:
+      - { name: series, label: ধারাবাহিক (Series), field: series }
+    fields:
+      - name: series
+        label: কোন ধারাবাহিক? (Which series?)
+        widget: relation
+        collection: series
+        value_field: title
+        search_fields: [title]
+        display_fields: [title]
+        hint: তালিকায় নাম না থাকলে আগে “ধারাবাহিক — নাম”-এ গিয়ে নামটা যোগ করুন।
+      - name: part
+        label: পর্ব নম্বর (Part number)
+        widget: number
+        value_type: int
+        min: 1
+        hint: প্রথম পর্ব হলে 1, তারপর 2, 3…
+      - name: title
+        label: এই পর্বের নাম (Part title) — না লিখলেও চলবে
+        widget: string
+        required: false
+      - name: story
+        label: লেখা (Text)
+        widget: text
+        use_emoji_autocomplete: false
+        hint: প্রতিটা অনুচ্ছেদের শেষে Enter টিপুন।
+      - name: date
+        label: তারিখ (Date)
+        widget: datetime
+        type: date
+        format: YYYY-MM-DD
+        default: "{{now}}"
+
+  # ---- Story series: the names --------------------------------------------
+  - name: series
+    label: "ধারাবাহিক — নাম (Series: Names)"
+    label_singular: ধারাবাহিক (Series)
+    description: প্রতিটা ধারাবাহিক গল্পের নাম এখানে একবারই লিখতে হয়। পর্বগুলো লেখা হয় ওপরের “ধারাবাহিক — পর্ব”-এ।
+    icon: bookmarks
+    folder: _series
+    extension: md
+    format: yaml-frontmatter
+    slug:
+      template: "{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}"
+      editable: false
+    summary: "{{title}}"
+    fields:
+      - name: title
+        label: ধারাবাহিকের নাম (Series name)
+        widget: string
+        hint: পরে নাম বদলালে পুরনো পর্বগুলোতেও নামটা নতুন করে বেছে দিতে হবে।
+      - name: lang
+        label: ভাষা (Language)
+        widget: select
+        options:
+          - { label: বাংলা, value: bn }
+          - { label: English, value: en }
+        default: bn
+      - name: about
+        label: গল্পটা কী নিয়ে (A few lines about it) — না লিখলেও চলবে
+        widget: text
+        required: false
+        use_emoji_autocomplete: false
+      - name: title_en
+        label: ইংরেজিতে নাম (English title) — না লিখলেও চলবে
+        widget: string
+        required: false
 
 singletons:
   - name: about
@@ -67,11 +228,36 @@ singletons:
       - name: site_title
         label: খাতার নাম (Site name)
         widget: string
+      - name: tagline
+        label: নামের নিচের এক লাইন (Tagline)
+        widget: string
+        required: false
+        hint: সাইটের বাঁদিকে খাতার নামের নিচে ছোট করে দেখায়।
       - name: poet_name
         label: আপনার নাম (Your name)
         widget: string
+      - name: avatar
+        label: ছবি (Photo)
+        widget: image
+        required: false
+        hint: গোল করে কেটে দেখাবে। না দিলে লাল “ক” চিহ্নটা থাকবে।
       - name: about
-        label: নিজের কথা (A few lines about you)
+        label: নিজের কথা, বাংলায় (About you, in Bengali)
         widget: text
         required: false
         use_emoji_autocomplete: false
+      - name: about_en
+        label: নিজের কথা, ইংরেজিতে (About you, in English)
+        widget: text
+        required: false
+        use_emoji_autocomplete: false
+      - name: links
+        label: লিংক (Links) — না দিলেও চলবে
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { name: email, label: Email, widget: string, required: false }
+          - { name: facebook, label: Facebook page link, widget: string, required: false }
+          - { name: instagram, label: Instagram link, widget: string, required: false }
+          - { name: youtube, label: YouTube link, widget: string, required: false }

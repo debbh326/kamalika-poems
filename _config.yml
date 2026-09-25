@@ -1,23 +1,58 @@
-# Site name, poet's name and the "about" text live in _data/about.yml,
-# so they can be changed from the phone (admin page → "খাতার পরিচয়").
+# Site name, poet's name, tagline, photo and the "about" text live in
+# _data/about.yml, so they can be changed from the phone (admin → "খাতার পরিচয়").
 
-lang: bn
+lang: en
 timezone: Asia/Kolkata
 
-# Show a poem even if its date/time is a few minutes ahead of the build server.
+# Show a piece even if its date is a few minutes ahead of the build server.
 future: true
 
+# One folder per kind of writing. Each file becomes its own page.
 collections:
   poems:
     output: true
-    permalink: /kobita/:name/
+    permalink: /poems/:name/
+  stories:
+    output: true
+    permalink: /stories/:name/
+  parts:            # one part (পর্ব) of a story series
+    output: true
+    permalink: /series/part/:name/
+  series:           # the series themselves: name, language, a few lines about it
+    output: true
+    permalink: /series/:name/
 
 defaults:
-  - scope:
-      path: ""
-      type: poems
-    values:
-      layout: poem
+  - scope: { path: "", type: poems }
+    values: { layout: piece }
+  - scope: { path: "", type: stories }
+    values: { layout: piece }
+  - scope: { path: "", type: parts }
+    values: { layout: piece }
+  - scope: { path: "", type: series }
+    values: { layout: series }
+
+# How each kind of writing is labelled on the site. The order here is the
+# order of the filter buttons. Parts get their language from their series.
+kinds:
+  poems:   { en: Poem,  en_plural: Poems,         bn: কবিতা,    url: /poems/ }
+  stories: { en: Short Story, en_plural: Short Stories, bn: ছোটগল্প, url: /stories/ }
+  parts:   { en: Story Series, en_plural: Story Series, bn: ধারাবাহিক, url: /series/ }
+
+languages:
+  bn: { name: বাংলা, en: Bengali, url: /bangla/ }
+  en: { name: English, en: English, url: /english/ }
+
+# Sidebar menu: English in capitals, Bengali beside it.
+nav:
+  - { en: Home,          bn: প্রথম পাতা, url: /,          icon: home }
+  - { en: Poems,         bn: কবিতা,     url: /poems/,    icon: feather }
+  - { en: Short Stories, bn: ছোটগল্প,    url: /stories/,  icon: book }
+  - { en: Story Series,  bn: ধারাবাহিক,  url: /series/,   icon: layers }
+  - { en: English,       bn: ইংরেজি,     url: /english/,  icon: letter-en }
+  - { en: Bengali,       bn: বাংলা,      url: /bangla/,   icon: letter-bn }
+  - { en: Archives,      bn: সব লেখা,    url: /archives/, icon: archive }
+  - { en: About,         bn: পরিচয়,      url: /about/,    icon: info }
 
 # Keep the setup notes off the public website.
 exclude:

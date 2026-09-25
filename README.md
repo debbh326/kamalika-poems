@@ -1,76 +1,55 @@
-# কবিতার খাতা — a poetry site for Maa
+# লেখার খাতা — a writing site for Maa
 
-A GitHub Pages site for Bengali poems, with a phone-friendly writing screen at `/admin/`.
-Poems are saved as small text files in this repo; GitHub rebuilds the site a minute or two after each save.
+A GitHub Pages site for her poems, short stories and story series, in Bengali and English, with a phone-friendly writing screen at `/admin/`. Everything she writes is saved as a small text file in this repo, and GitHub rebuilds the site a minute or two after each save.
 
-- **Public site:** `https://YOUR-GITHUB-USERNAME.github.io/YOUR-REPO-NAME/`
-- **Writing screen:** the same address + `admin/`
+- **Public site:** https://debbh326.github.io/kamalika-poems/
+- **Writing screen:** https://debbh326.github.io/kamalika-poems/admin/
 
 Nothing to install, no build step, no monthly cost.
 
+The look follows Jekyll's Chirpy theme: sidebar with photo and menu, cards for each piece, a right-hand column with recent pieces, search, and a light/dark switch. It's built directly into this site rather than using the Chirpy theme itself, because Chirpy needs a GitHub Actions build. This keeps the plain "Deploy from a branch" setup.
+
+The menu and labels are in English with Bengali alongside, so visitors who don't read Bengali can find their way around.
+
 ---
 
-## Setup (about 15 minutes)
+## Updating the live site to this version
 
-### 1. Put the files on GitHub
+The repo already has the earlier, poems-only version, and this folder is a clone of it. From this folder:
 
-Create a new **public** repository (GitHub Pages is free for public repos), for example `maa-kobita`. Then either:
-
-**With git:**
 ```bash
-cd kobita-site
-git init -b main
-git add .
-git commit -m "Poetry site"
-git remote add origin https://github.com/YOUR-GITHUB-USERNAME/maa-kobita.git
-git push -u origin main
+git pull                     # first, in case she has saved anything from her phone
+git add -A                   # -A also records the three removed files listed below
+git commit -m "Chirpy-style layout; stories, series and English writing"
+git push
 ```
 
-**Or in the browser:** on the empty repo page choose *uploading an existing file* and drag in everything inside the `kobita-site` folder (not the folder itself). If the empty `_poems` folder gets skipped, that's fine; it's created with the first poem.
+**In the browser instead:** repo page → *Add file → Upload files* → drag in everything inside `kobita-site` except the hidden `.git` folder. Afterwards, delete these three old files, which are no longer used (they do no harm if left):
+`_layouts/poem.html`, `_includes/bn-date.html`, `assets/kobita.css`.
 
-### 2. Point the writing screen at your repo
+**`_data/about.yml` holds what she types under খাতার পরিচয় (About).** On 25 Sep 2026 the live copy was still the untouched default, so replacing it is fine. If she has filled it in since, `git pull` will stop and name that file. Run `git restore --source=HEAD --staged --worktree _data/about.yml` to drop this folder's copy, then `git pull` again. Her text stays, and the new optional fields (tagline, photo, English about) show up empty in the form.
 
-Open `admin/config.yml` and change the two lines marked ✏️:
+After the push, watch the **Actions** tab. When "pages build and deployment" turns green, the new site is live. On her phone, open the writing app once and pull down to refresh so it picks up the new lists.
 
-```yaml
-repo: YOUR-GITHUB-USERNAME/maa-kobita
-display_url: https://YOUR-GITHUB-USERNAME.github.io/maa-kobita/
-```
+---
 
-(If you named the repo `YOUR-GITHUB-USERNAME.github.io`, the site lives at the root and `display_url` is just `https://YOUR-GITHUB-USERNAME.github.io/`.)
+## What she can write
 
-### 3. Turn on GitHub Pages
+Each kind of writing is its own list in the writing screen, so she picks the kind by tapping the list. There's no "type" field to get wrong.
 
-Repo → **Settings → Pages → Build and deployment** → Source: **Deploy from a branch** → Branch: **main**, folder **/ (root)** → Save.
+| List in the writing screen | Folder | Shown on the site at |
+|---|---|---|
+| কবিতা (Poems) | `_poems/` | `/poems/` |
+| ছোটগল্প (Short Stories) | `_stories/` | `/stories/` |
+| ধারাবাহিক — পর্ব (Series: Parts) | `_parts/` | on its series' page, and in the lists |
+| ধারাবাহিক — নাম (Series: Names) | `_series/` | `/series/` and one page per series |
+| খাতার পরিচয় (About) | `_data/about.yml` | sidebar, `/about/`, footer |
 
-Watch the **Actions** tab: when "pages build and deployment" turns green, the site is live. It shows an empty-state message until the first poem arrives.
+Every poem, story and series has a **ভাষা (Language)** choice, বাংলা or English (default বাংলা). A part takes its language from its series. The **English** and **Bengali** pages in the menu collect everything in that language, and the Poems and Short Stories pages get All / Bengali / English filter buttons once both languages exist.
 
-### 4. Make a sign-in token for her phone
+Bengali pieces can have an optional **English title**, shown in small italics beside the Bengali one.
 
-GitHub → your avatar → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
-
-- **Token name:** `Maa's phone`
-- **Expiration:** the longest option offered (put a reminder in your calendar to renew it)
-- **Repository access:** *Only select repositories* → this repo only
-- **Permissions → Repository permissions → Contents:** **Read and write**
-  (Metadata: read is added automatically. Nothing else is needed.)
-
-Copy the token. It's shown only once.
-
-The token can only touch this one repository. Anyone holding her unlocked phone could edit the poems, which is the same trust level as her WhatsApp. If the phone is lost, delete the token on that same GitHub page and the phone loses access immediately.
-
-### 5. Set up her phone (do this in person)
-
-1. Open `https://…/admin/` in Chrome.
-2. Tap **Sign In with Token**, paste the token, sign in. The browser remembers it.
-3. Chrome menu (⋮) → **Add to Home screen**. It appears as a red **ক** icon called *কবিতা লিখুন* and opens like an app.
-4. Open **খাতার পরিচয় (About)** and fill in her name, a site name if she wants a different one, and a few lines about herself. Save.
-5. Write one poem together so she sees the whole loop, including the site updating a minute later.
-6. Make sure she has a Bengali keyboard she's comfortable with: Gboard → Settings → Languages → Add keyboard → Bengali. Pick whichever layout suits her: the full বাংলা layout, the transliteration layout (type *amar* → আমার), or handwriting, where she writes letters with her finger. The mic key does Bengali voice typing too.
-
-**iPhone:** the home-screen app keeps separate storage from Safari, so sign in with the token *inside* the home-screen app, not just in Safari.
-
-Then send her `GUIDE-bn.md` (a one-page Bengali how-to), or read through it with her.
+**How series work:** she writes the series name once under *Series: Names*. Then each part picks that series from a dropdown and gets a part number. On the site, each series has a page listing its parts in order with a *Start reading* button. Each part page has Previous/Next part links and an "In This Series" list. Parts are linked to their series by the series name, so renaming a series means re-picking it in its old parts. The hint in the form says so.
 
 ---
 
@@ -78,37 +57,66 @@ Then send her `GUIDE-bn.md` (a one-page Bengali how-to), or read through it with
 
 | Where | What |
 |---|---|
-| `_poems/*.md` | One file per poem. Fields: `title`, `poem` (plain text, line breaks kept), `date`. File names are the save time, e.g. `20260925-143012.md`. |
-| `_data/about.yml` | Site name, her name, the about text. Edited from the phone. |
-| `admin/config.yml` | The writing screen's fields and labels. |
+| `_poems/`, `_stories/`, `_parts/`, `_series/` | One file per piece. File names are the save time, e.g. `20260925-143012.md`. |
+| `_config.yml` | The four collections, the labels for each kind (`kinds`), the two languages, and the sidebar menu (`nav`). |
+| `_data/about.yml` | Site name, tagline, her name, photo, about text (Bengali and English), optional email/Facebook/Instagram/YouTube links. Edited from the phone. |
+| `admin/config.yml` | The writing screen: its lists, fields and Bengali labels. |
 | `admin/index.html` | Loads Sveltia CMS from its CDN. |
-| `_layouts/`, `index.html`, `404.html` | Page templates. |
-| `_includes/bn-date.html` | Turns dates into ২৫ সেপ্টেম্বর ২০২৬. |
-| `assets/kobita.css` | All styling. Colours are the five variables at the top (light and dark). |
+| `_layouts/default.html` | The page frame: sidebar, top bar with search, right-hand column, footer. |
+| `_layouts/piece.html`, `_layouts/series.html` | One poem / story / part, and one series. |
+| `index.html`, `poems.html`, `stories.html`, `series.html`, `english.html`, `bangla.html`, `archives.html`, `about.html`, `404.html` | The other pages. |
+| `_includes/writings.html` | Collects every piece, newest first. Pieces with the same date are ordered by save time, so backdated notebook pieces still land in order. |
+| `_includes/doc-info.html` | Works out a piece's heading, language and part label. |
+| `search.json` | The search index, built with the site. Search runs in the browser and matches Bengali or English. |
+| `assets/site.css`, `assets/site.js` | All styling (colours are variables at the top: light, then dark) and the small bits of JavaScript: light/dark switch, phone menu, search, filter buttons, share buttons. |
 
-Poems are listed newest first. Poems with the same date are ordered by the time they were saved, so old notebook poems can be backdated and still land in a sensible order.
+Light or dark follows the visitor's phone/computer setting. The round button at the bottom of the sidebar flips it and remembers the choice on that device.
 
-You can also add a poem by hand: create `_poems/anything.md` with front matter `title` and `date`, and write the poem as the Markdown body. Single line breaks are kept there too.
+You can also add a piece by hand: create e.g. `_poems/anything.md` with front matter `title`, `lang` and `date`, and write the text in a `poem:` block (or as the Markdown body).
+
+### Adding another kind of writing (e.g. essays)
+
+1. `_config.yml`: add an `essays` entry under `collections` (copy `stories`, permalink `/essays/:name/`), a matching `defaults` entry with `layout: piece`, an entry under `kinds`, and a menu item under `nav`.
+2. Copy `stories.html` to `essays.html`; change `title`, `section`, `permalink` and `kind`.
+3. `admin/config.yml`: copy the whole `stories` block, change `name`, the labels and `folder: _essays`. Keep the text field named `story`.
+4. Create `_essays/.gitkeep` so the folder exists.
 
 ### Preview locally (optional)
 
+GitHub Pages builds with Jekyll 3.10, so preview with the same version:
+
 ```bash
-gem install jekyll   # once
-jekyll serve         # then open http://localhost:4000
+gem install jekyll -v 3.10.0 kramdown-parser-gfm webrick
+jekyll serve --baseurl /kamalika-poems   # then open http://localhost:4000/kamalika-poems/
 ```
 
-### Custom domain (optional)
+On macOS's built-in Ruby 2.6, a few dependencies need older versions first:
+`gem install ffi -v 1.15.5 && gem install public_suffix -v 4.0.7 && gem install i18n -v 1.14.1`.
 
-Settings → Pages → Custom domain. After that, update `display_url` in `admin/config.yml`.
+---
+
+## Setting it up from scratch (for reference)
+
+1. Create a **public** repo and put this folder's contents in it.
+2. Set `repo` and `display_url` in `admin/config.yml` (the two lines marked ✏️).
+3. Repo → **Settings → Pages** → Source: **Deploy from a branch**, branch **main**, folder **/ (root)**.
+4. Make a sign-in token: GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens**. Name it *Maa's phone*, choose the longest expiry (set a calendar reminder to renew), *Only select repositories* → this repo, and **Contents: Read and write**. The token can only touch this one repo. If her phone is lost, delete the token and the phone loses access immediately.
+5. On her phone, in person: open `…/admin/` in Chrome → **Sign In with Token** → paste. Then Chrome menu (⋮) → **Add to Home screen**. It appears as a red **ক** icon called *কবিতা লিখুন*. On an iPhone, sign in *inside* the home-screen app, since it keeps separate storage from Safari.
+6. Fill in খাতার পরিচয় (About) together and write one piece, so she sees the site update a minute later.
+7. Check she has a Bengali keyboard she's comfortable with (Gboard → Languages → Bengali: the বাংলা layout, transliteration, or handwriting; the mic key does Bengali voice typing).
+
+Then send her `GUIDE-bn.md` (a Bengali how-to), or go through it with her.
 
 ---
 
 ## When something goes wrong
 
-**She saved a poem but it isn't on the site.** Check the Actions tab. A red build usually means a broken file; open the newest file in `_poems/` and look for anything odd at the top. Otherwise the build just hasn't finished yet, or her browser is showing a cached page (pull down to refresh).
+**She saved something but it isn't on the site.** Check the Actions tab. A red build usually means a broken file: open the newest file in `_poems/`, `_stories/`, `_parts/` or `_series/` and look for anything odd at the top. Otherwise the build just hasn't finished yet, or her browser is showing a cached page (pull down to refresh).
 
-**The writing screen asks her to sign in again.** The token expired or the browser data was cleared. Make a new token (step 4) and sign in again (step 5.2).
+**A part shows the wrong series name, or its series page doesn't list it.** The part's `series:` must match the series `title` exactly. Re-pick the series in the part and save.
 
-**The writing screen won't load at all.** It pulls Sveltia CMS from `unpkg.com`; check that the site loads on another network. Sveltia CMS is still in beta; if an update ever breaks something, you can pin a version in `admin/index.html`, e.g. `https://unpkg.com/@sveltia/cms@0.221.1/dist/sveltia-cms.js` (the version this was built and tested against).
+**The writing screen asks her to sign in again.** The token expired or the browser data was cleared. Make a new token and sign in again.
+
+**The writing screen won't load at all.** It pulls Sveltia CMS from `unpkg.com`. Check that the site loads on another network. Sveltia CMS is still in beta; if an update ever breaks something, pin a version in `admin/index.html`, e.g. `https://unpkg.com/@sveltia/cms@0.221.1/dist/sveltia-cms.js` (the version this was checked against).
 
 **Want to undo a change she made?** Every save is a commit. Open the file's history on GitHub and restore the earlier version.

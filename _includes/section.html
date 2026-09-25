@@ -1,0 +1,21 @@
+{%- comment -%}
+  A page listing one kind of writing (kind="poems") or one language (lang="en").
+{%- endcomment -%}
+{%- if include.kind -%}
+  {%- assign sc_kind = site.kinds[include.kind] -%}
+  {%- include writings.html kind=include.kind -%}
+  {%- assign sc_en = sc_kind.en_plural -%}
+  {%- assign sc_bn = sc_kind.bn -%}
+  {%- assign sc_filter = "lang" -%}
+{%- else -%}
+  {%- assign sc_language = site.languages[include.lang] -%}
+  {%- include writings.html lang=include.lang -%}
+  {%- assign sc_en = sc_language.en -%}
+  {%- assign sc_bn = sc_language.name -%}
+  {%- assign sc_filter = "kind" -%}
+{%- endif -%}
+<header class="page-head">
+  <h1>{{ sc_en }}{% if sc_bn != sc_en %} <span class="page-head-bn" lang="bn">{{ sc_bn }}</span>{% endif %}</h1>
+  <p class="page-count">{{ writings.size }} {% if writings.size == 1 %}piece{% else %}pieces{% endif %}</p>
+</header>
+{% include card-list.html docs=writings filter=sc_filter empty=include.empty %}

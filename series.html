@@ -1,0 +1,58 @@
+---
+layout: default
+title: Story Series
+section: parts
+permalink: /series/
+---
+{%- comment -%} Every series, the one with the newest part first; series with no parts yet go last. {%- endcomment -%}
+{%- assign si_keys = "" | split: "" -%}
+{%- for si_series in site.series -%}
+  {%- assign si_parts = site.parts | where: "series", si_series.title | sort: "date" -%}
+  {%- if si_parts.size > 0 -%}
+    {%- assign si_date = si_parts.last.date | date: "%Y%m%d" -%}
+  {%- else -%}
+    {%- assign si_date = "00000000" -%}
+  {%- endif -%}
+  {%- capture si_key -%}{{ si_date }}|{{ si_series.slug }}|{{ forloop.index0 }}{%- endcapture -%}
+  {%- assign si_keys = si_keys | push: si_key -%}
+{%- endfor -%}
+{%- assign si_keys = si_keys | sort | reverse -%}
+
+<header class="page-head">
+  <h1>Story Series <span class="page-head-bn" lang="bn">ধারাবাহিক</span></h1>
+  <p class="page-count">{{ site.series.size }} series · {{ site.parts.size }} {% if site.parts.size == 1 %}part{% else %}parts{% endif %}</p>
+</header>
+
+{%- if si_keys.size == 0 %}
+<p class="empty">No story series yet.</p>
+{%- else %}
+<div class="card-list">
+  {%- for si_key in si_keys %}
+  {%- assign si_bits = si_key | split: "|" %}
+  {%- assign si_index = si_bits[2] | plus: 0 %}
+  {%- assign si_series = site.series[si_index] %}
+  {%- assign si_lang = si_series.lang | default: "bn" %}
+  {%- assign si_parts = site.parts | where: "series", si_series.title | sort: "part" %}
+  {%- assign si_latest = si_parts | sort: "date" | last %}
+  <article class="card" data-lang="{{ si_lang }}">
+    <a class="card-link" href="{{ si_series.url | relative_url }}">
+      <h2 class="card-title"><span lang="{{ si_lang }}">{{ si_series.title | escape }}</span>{% if si_lang != "en" and si_series.title_en and si_series.title_en != "" and si_series.title_en != si_series.title %} <span class="title-en" lang="en">{{ si_series.title_en | escape }}</span>{% endif %}</h2>
+      <p class="card-excerpt" lang="{{ si_lang }}">
+        {%- if si_series.about and si_series.about != "" -%}
+          {% include excerpt.html doc=si_series %}
+        {%- elsif si_parts.size > 0 -%}
+          {% include excerpt.html doc=si_parts.first %}
+        {%- endif -%}
+      </p>
+      <div class="meta">
+        <span>{% include icon.html name="layers" %}{% if si_parts.size == 0 %}Coming soon{% else %}{{ si_parts.size }} {% if si_parts.size == 1 %}part{% else %}parts{% endif %}{% endif %}</span>
+        {%- if si_latest %}
+        <span>{% include icon.html name="calendar" %}Latest <time datetime="{{ si_latest.date | date_to_xmlschema }}">{{ si_latest.date | date: "%b %-d, %Y" }}</time></span>
+        {%- endif %}
+        <span class="lang-tag" lang="{{ si_lang }}">{{ site.languages[si_lang].name }}</span>
+      </div>
+    </a>
+  </article>
+  {%- endfor %}
+</div>
+{%- endif %}

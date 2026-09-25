@@ -1,0 +1,49 @@
+---
+layout: default
+title: About
+permalink: /about/
+---
+{%- assign about = site.data.about -%}
+{%- capture ab_nl %}
+{% endcapture -%}
+<article class="piece about-page">
+  <header class="about-head">
+    {%- if about.avatar and about.avatar != "" %}
+    <img class="about-photo" src="{{ about.avatar | relative_url }}" alt="" width="120" height="120">
+    {%- else %}
+    <img class="about-photo" src="{{ '/assets/icon.svg' | relative_url }}" alt="" width="120" height="120">
+    {%- endif %}
+    <div>
+      <p class="overline">About</p>
+      <h1 class="piece-title" lang="bn">{{ about.poet_name }}</h1>
+      {%- if about.tagline and about.tagline != "" %}
+      <p class="piece-subtitle">{{ about.tagline | escape }}</p>
+      {%- endif %}
+    </div>
+  </header>
+
+  {%- if about.about and about.about != "" %}
+  <div class="piece-body prose" lang="bn">
+    {%- assign ab_paragraphs = about.about | strip | split: ab_nl %}
+    {%- for ab_para in ab_paragraphs %}{% assign ab_para = ab_para | strip %}{% if ab_para != "" %}
+    <p>{{ ab_para | escape }}</p>
+    {%- endif %}{% endfor %}
+  </div>
+  {%- endif %}
+
+  {%- if about.about_en and about.about_en != "" %}
+  <div class="piece-body prose" lang="en">
+    {%- assign ab_paragraphs = about.about_en | strip | split: ab_nl %}
+    {%- for ab_para in ab_paragraphs %}{% assign ab_para = ab_para | strip %}{% if ab_para != "" %}
+    <p>{{ ab_para | escape }}</p>
+    {%- endif %}{% endfor %}
+  </div>
+  {%- endif %}
+
+  <h2 class="section-heading">On this site</h2>
+  <ul class="stats">
+    <li><a href="{{ '/poems/' | relative_url }}"><strong>{{ site.poems.size }}</strong> {% if site.poems.size == 1 %}poem{% else %}poems{% endif %}</a></li>
+    <li><a href="{{ '/stories/' | relative_url }}"><strong>{{ site.stories.size }}</strong> short {% if site.stories.size == 1 %}story{% else %}stories{% endif %}</a></li>
+    <li><a href="{{ '/series/' | relative_url }}"><strong>{{ site.series.size }}</strong> story series</a></li>
+  </ul>
+</article>

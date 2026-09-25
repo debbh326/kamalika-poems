@@ -1,0 +1,11 @@
+{%- comment -%}
+  Sets `doc_lang` ("bn" or "en") and `doc_series` for one piece.
+  A series part takes its language from its series.
+{%- endcomment -%}
+{%- assign doc_series = nil -%}
+{%- if include.doc.collection == "parts" -%}
+  {%- assign doc_series = site.series | where: "title", include.doc.series | first -%}
+  {%- assign doc_lang = doc_series.lang | default: "bn" -%}
+{%- else -%}
+  {%- assign doc_lang = include.doc.lang | default: "bn" -%}
+{%- endif -%}

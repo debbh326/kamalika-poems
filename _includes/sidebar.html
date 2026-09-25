@@ -1,0 +1,63 @@
+{%- assign about = site.data.about -%}
+{%- comment -%} `strip` turns a missing value into "", so one != "" test covers both. {%- endcomment -%}
+{%- assign sb_avatar = about.avatar | strip -%}
+{%- assign sb_tagline = about.tagline | strip -%}
+{%- assign sb_email = about.links.email | strip -%}
+{%- assign sb_facebook = about.links.facebook | strip -%}
+{%- assign sb_instagram = about.links.instagram | strip -%}
+{%- assign sb_youtube = about.links.youtube | strip -%}
+<aside id="sidebar" class="sidebar" aria-label="Site menu">
+  <header class="profile">
+    <a class="avatar" href="{{ '/' | relative_url }}" aria-label="Home">
+      {%- if sb_avatar != "" -%}
+      <img src="{{ sb_avatar | relative_url }}" alt="" width="112" height="112">
+      {%- else -%}
+      <img src="{{ '/assets/icon.svg' | relative_url }}" alt="" width="112" height="112">
+      {%- endif -%}
+    </a>
+    <a class="site-title" href="{{ '/' | relative_url }}" lang="bn">{{ about.site_title }}</a>
+    {%- if sb_tagline != "" %}
+    <p class="site-subtitle">{{ sb_tagline | escape }}</p>
+    {%- endif %}
+  </header>
+
+  <nav class="nav" aria-label="Sections">
+    <ul>
+      {%- for item in site.nav %}
+      {%- assign sb_active = false -%}
+      {%- if item.url == "/" -%}
+        {%- if page.url == "/" %}{% assign sb_active = true %}{% endif -%}
+      {%- else -%}
+        {%- assign sb_prefix = page.url | slice: 0, item.url.size -%}
+        {%- if sb_prefix == item.url %}{% assign sb_active = true %}{% endif -%}
+      {%- endif %}
+      <li>
+        <a class="nav-link{% if sb_active %} active{% endif %}" href="{{ item.url | relative_url }}"{% if sb_active %} aria-current="page"{% endif %}>
+          {% include icon.html name=item.icon %}
+          <span class="nav-en">{{ item.en }}</span>
+          <span class="nav-bn" lang="bn">{{ item.bn }}</span>
+        </a>
+      </li>
+      {%- endfor %}
+    </ul>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button class="round-btn" type="button" data-mode-toggle aria-label="Switch between light and dark">{% include icon.html name="mode" %}</button>
+    {%- if sb_email != "" or sb_facebook != "" or sb_instagram != "" or sb_youtube != "" %}
+    <span class="dot" aria-hidden="true"></span>
+    {%- endif %}
+    {%- if sb_email != "" %}
+    <a class="round-btn" href="mailto:{{ sb_email }}" aria-label="Email">{% include icon.html name="mail" %}</a>
+    {%- endif %}
+    {%- if sb_facebook != "" %}
+    <a class="round-btn" href="{{ sb_facebook }}" aria-label="Facebook" rel="noopener">{% include icon.html name="facebook" %}</a>
+    {%- endif %}
+    {%- if sb_instagram != "" %}
+    <a class="round-btn" href="{{ sb_instagram }}" aria-label="Instagram" rel="noopener">{% include icon.html name="instagram" %}</a>
+    {%- endif %}
+    {%- if sb_youtube != "" %}
+    <a class="round-btn" href="{{ sb_youtube }}" aria-label="YouTube" rel="noopener">{% include icon.html name="youtube" %}</a>
+    {%- endif %}
+  </div>
+</aside>

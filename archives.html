@@ -1,0 +1,38 @@
+---
+layout: default
+title: Archives
+permalink: /archives/
+---
+{%- include writings.html -%}
+<header class="page-head">
+  <h1>Archives <span class="page-head-bn" lang="bn">সব লেখা</span></h1>
+  <p class="page-count">{{ writings.size }} {% if writings.size == 1 %}piece{% else %}pieces{% endif %}, newest first</p>
+</header>
+
+{%- if writings.size == 0 %}
+<p class="empty">Nothing here yet.</p>
+{%- else %}
+{%- assign ar_year = nil %}
+<div class="archives">
+{%- for ar_doc in writings %}
+  {%- assign ar_this_year = ar_doc.date | date: "%Y" %}
+  {%- if ar_this_year != ar_year %}
+    {%- unless forloop.first %}
+  </ul>
+    {%- endunless %}
+  <h2 class="archive-year">{{ ar_this_year }}</h2>
+  <ul class="archive-list">
+    {%- assign ar_year = ar_this_year %}
+  {%- endif %}
+  {%- include doc-info.html doc=ar_doc %}
+    <li>
+      <time datetime="{{ ar_doc.date | date_to_xmlschema }}">{{ ar_doc.date | date: "%d" }}<span>{{ ar_doc.date | date: "%b" }}</span></time>
+      <a href="{{ ar_doc.url | relative_url }}" lang="{{ doc_lang }}">{{ doc_label | escape }}</a>
+      <span class="archive-kind">{{ doc_kind.en }}</span>
+    </li>
+  {%- if forloop.last %}
+  </ul>
+  {%- endif %}
+{%- endfor %}
+</div>
+{%- endif %}

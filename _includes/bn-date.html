@@ -1,4 +1,0 @@
-{%- assign bn_months = "জানুয়ারি,ফেব্রুয়ারি,মার্চ,এপ্রিল,মে,জুন,জুলাই,আগস্ট,সেপ্টেম্বর,অক্টোবর,নভেম্বর,ডিসেম্বর" | split: "," -%}
-{%- assign m = include.date | date: "%-m" | minus: 1 -%}
-{%- capture d -%}{{ include.date | date: "%-d" }} {{ bn_months[m] }} {{ include.date | date: "%Y" }}{%- endcapture -%}
-{{- d | replace: "0", "০" | replace: "1", "১" | replace: "2", "২" | replace: "3", "৩" | replace: "4", "৪" | replace: "5", "৫" | replace: "6", "৬" | replace: "7", "৭" | replace: "8", "৮" | replace: "9", "৯" -}}

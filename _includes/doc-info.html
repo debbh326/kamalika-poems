@@ -1,0 +1,28 @@
+{%- comment -%}
+  Works out how to show one piece of writing. Sets:
+    doc_lang, doc_series      (see doc-lang.html)
+    doc_kind                  its entry in site.kinds
+    doc_language              its entry in site.languages
+    doc_heading               the title; for a series part, the series name
+    doc_heading_en            English title, only for Bengali pieces that have one
+    doc_part                  "Part 3 · <part title>", series parts only
+    doc_label                 one line for lists: heading, plus the part
+{%- endcomment -%}
+{%- include doc-lang.html doc=include.doc -%}
+{%- assign doc_kind = site.kinds[include.doc.collection] -%}
+{%- assign doc_language = site.languages[doc_lang] -%}
+{%- assign doc_part = nil -%}
+{%- if include.doc.collection == "parts" -%}
+  {%- assign doc_heading = include.doc.series | default: "Untitled series" -%}
+  {%- assign doc_heading_en = doc_series.title_en -%}
+  {%- comment -%} Jekyll invents a title from the file name when a part has none. {%- endcomment -%}
+  {%- assign di_auto_title = include.doc.slug | replace: "-", " " -%}
+  {%- capture doc_part -%}Part {{ include.doc.part }}{% if include.doc.title and include.doc.title != "" and include.doc.title != di_auto_title %} · {{ include.doc.title }}{% endif %}{%- endcapture -%}
+{%- else -%}
+  {%- assign doc_heading = include.doc.title -%}
+  {%- assign doc_heading_en = include.doc.title_en -%}
+{%- endif -%}
+{%- if doc_lang == "en" or doc_heading_en == nil or doc_heading_en == "" or doc_heading_en == doc_heading -%}
+  {%- assign doc_heading_en = nil -%}
+{%- endif -%}
+{%- capture doc_label -%}{{ doc_heading }}{% if doc_part %} · {{ doc_part }}{% endif %}{%- endcapture -%}

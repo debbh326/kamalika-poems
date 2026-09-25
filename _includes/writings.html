@@ -1,0 +1,29 @@
+{%- comment -%}
+  Sets `writings` to every poem, short story and series part, newest first.
+  Pieces with the same date are ordered by file name, which is the time
+  they were saved, so backdated notebook pieces still land in order.
+
+  Optional: kind="poems" (or stories / parts) and lang="bn" / lang="en".
+{%- endcomment -%}
+{%- assign wr_keys = "" | split: "" -%}
+{%- for wr_kind in site.kinds -%}
+  {%- assign wr_name = wr_kind[0] -%}
+  {%- if include.kind and include.kind != wr_name %}{% continue %}{% endif -%}
+  {%- for wr_doc in site[wr_name] -%}
+    {%- if include.lang -%}
+      {%- include doc-lang.html doc=wr_doc -%}
+      {%- if doc_lang != include.lang %}{% continue %}{% endif -%}
+    {%- endif -%}
+    {%- capture wr_key -%}{{ wr_doc.date | date: "%Y%m%d" }}|{{ wr_doc.slug }}|{{ wr_name }}|{{ forloop.index0 }}{%- endcapture -%}
+    {%- assign wr_keys = wr_keys | push: wr_key -%}
+  {%- endfor -%}
+{%- endfor -%}
+{%- assign wr_keys = wr_keys | sort | reverse -%}
+{%- assign writings = "" | split: "" -%}
+{%- for wr_key in wr_keys -%}
+  {%- assign wr_bits = wr_key | split: "|" -%}
+  {%- assign wr_name = wr_bits[2] -%}
+  {%- assign wr_index = wr_bits[3] | plus: 0 -%}
+  {%- comment -%} Liquid can't read nested brackets like site[wr_bits[2]], hence wr_name. {%- endcomment -%}
+  {%- assign writings = writings | push: site[wr_name][wr_index] -%}
+{%- endfor -%}

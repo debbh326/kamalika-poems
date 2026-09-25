@@ -1,0 +1,107 @@
+---
+layout: default
+---
+{%- assign about = site.data.about -%}
+{%- include doc-info.html doc=page -%}
+{%- capture pc_nl %}
+{% endcapture -%}
+{%- if page.poem -%}
+  {%- assign pc_source = page.poem -%}
+{%- else -%}
+  {%- assign pc_source = page.story -%}
+{%- endif -%}
+
+{%- comment -%} Series parts link to their neighbours in the series, everything else to the next older / newer piece of the same kind. {%- endcomment -%}
+{%- if page.collection == "parts" -%}
+  {%- assign pc_parts = site.parts | where: "series", page.series | sort: "part" -%}
+  {%- for pc_part in pc_parts -%}
+    {%- if pc_part.url == page.url %}{% assign pc_index = forloop.index0 %}{% endif -%}
+  {%- endfor -%}
+  {%- assign pc_prev = nil -%}
+  {%- if pc_index > 0 -%}{%- assign pc_prev_index = pc_index | minus: 1 -%}{%- assign pc_prev = pc_parts[pc_prev_index] -%}{%- endif -%}
+  {%- assign pc_next_index = pc_index | plus: 1 -%}
+  {%- assign pc_next = pc_parts[pc_next_index] -%}
+  {%- assign pc_prev_label = "Previous part" -%}
+  {%- assign pc_next_label = "Next part" -%}
+{%- else -%}
+  {%- assign pc_prev = page.previous -%}
+  {%- assign pc_next = page.next -%}
+  {%- assign pc_prev_label = "Older" -%}
+  {%- assign pc_next_label = "Newer" -%}
+{%- endif -%}
+
+<article class="piece" lang="{{ doc_lang }}">
+  <header class="piece-head">
+    {%- if page.collection == "parts" %}
+    <p class="overline" lang="en">
+      {%- if doc_series -%}<a href="{{ doc_series.url | relative_url }}">Story Series</a>{%- else -%}Story Series{%- endif -%}
+      {%- if pc_parts.size > 1 %} · Part {{ page.part }} of {{ pc_parts.size }}{% endif -%}
+    </p>
+    {%- else %}
+    <p class="overline" lang="en"><a href="{{ doc_kind.url | relative_url }}">{{ doc_kind.en }}</a></p>
+    {%- endif %}
+
+    <h1 class="piece-title">{% if doc_series %}<a href="{{ doc_series.url | relative_url }}">{{ doc_heading | escape }}</a>{% else %}{{ doc_heading | escape }}{% endif %}</h1>
+    {%- if doc_heading_en %}
+    <p class="piece-subtitle" lang="en">{{ doc_heading_en | escape }}</p>
+    {%- endif %}
+    {%- if doc_part %}
+    <p class="piece-part">{{ doc_part | escape }}</p>
+    {%- endif %}
+
+    <div class="meta" lang="en">
+      {%- if about.poet_name and about.poet_name != "" %}
+      <span>{% include icon.html name="user" %}By <span lang="bn">{{ about.poet_name }}</span></span>
+      {%- endif %}
+      <span>{% include icon.html name="calendar" %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%b %-d, %Y" }}</time></span>
+      {%- unless page.poem %}
+      {%- assign pc_minutes = pc_source | number_of_words | divided_by: 180 | at_least: 1 %}
+      <span>{% include icon.html name="clock" %}{{ pc_minutes }} min read</span>
+      {%- endunless %}
+      <span class="lang-tag"><span lang="{{ doc_lang }}">{{ doc_language.name }}</span></span>
+    </div>
+  </header>
+
+  {%- if page.poem %}
+  <div class="piece-body poem">{{ page.poem | strip | escape }}</div>
+  {%- elsif page.story %}
+  {%- assign pc_paragraphs = page.story | strip | split: pc_nl %}
+  <div class="piece-body prose">
+    {%- for pc_para in pc_paragraphs %}{% assign pc_para = pc_para | strip %}{% if pc_para != "" %}
+    <p>{{ pc_para | escape }}</p>
+    {%- endif %}{% endfor %}
+  </div>
+  {%- else %}
+  <div class="piece-body prose md">{{ content }}</div>
+  {%- endif %}
+
+  <div class="share" lang="en">
+    <span class="share-label">Share</span>
+    <a class="round-btn" data-share-whatsapp href="https://wa.me/?text={{ page.url | absolute_url | url_encode }}" target="_blank" rel="noopener" aria-label="Share on WhatsApp">{% include icon.html name="message" %}</a>
+    <a class="round-btn" href="https://www.facebook.com/sharer/sharer.php?u={{ page.url | absolute_url | url_encode }}" target="_blank" rel="noopener" aria-label="Share on Facebook">{% include icon.html name="facebook" %}</a>
+    <button class="round-btn" type="button" data-copy-link aria-label="Copy link">{% include icon.html name="link" %}</button>
+    <button class="round-btn" type="button" data-share hidden aria-label="Share">{% include icon.html name="share" %}</button>
+    <span class="share-note" data-copied hidden role="status">Link copied</span>
+  </div>
+</article>
+
+{%- if pc_prev or pc_next %}
+<nav class="piece-nav" aria-label="More to read" lang="en">
+  {%- if pc_prev %}
+  {%- include doc-info.html doc=pc_prev %}
+  <a class="piece-nav-link prev" href="{{ pc_prev.url | relative_url }}">
+    <small>{% include icon.html name="chevron-left" %}{{ pc_prev_label }}</small>
+    <span lang="{{ doc_lang }}">{% if page.collection == "parts" %}{{ doc_part | escape }}{% else %}{{ doc_label | escape }}{% endif %}</span>
+  </a>
+  {%- else %}
+  <span class="piece-nav-link empty" aria-hidden="true"></span>
+  {%- endif %}
+  {%- if pc_next %}
+  {%- include doc-info.html doc=pc_next %}
+  <a class="piece-nav-link next" href="{{ pc_next.url | relative_url }}">
+    <small>{{ pc_next_label }}{% include icon.html name="chevron-right" %}</small>
+    <span lang="{{ doc_lang }}">{% if page.collection == "parts" %}{{ doc_part | escape }}{% else %}{{ doc_label | escape }}{% endif %}</span>
+  </a>
+  {%- endif %}
+</nav>
+{%- endif %}

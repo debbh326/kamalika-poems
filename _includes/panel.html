@@ -1,0 +1,38 @@
+{%- comment -%} The right-hand column on wide screens. {%- endcomment -%}
+{%- if page.collection == "parts" -%}
+  {%- assign pn_parts = site.parts | where: "series", page.series | sort: "part" -%}
+<section class="panel-section">
+  <h2 class="panel-heading">In This Series</h2>
+  <ol class="panel-list">
+    {%- for pn_part in pn_parts %}
+    {%- include doc-info.html doc=pn_part %}
+    <li><a href="{{ pn_part.url | relative_url }}" lang="{{ doc_lang }}"{% if pn_part.url == page.url %} aria-current="page"{% endif %}>{{ doc_part | escape }}</a></li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+{%- include writings.html %}
+{%- if writings.size > 0 %}
+<section class="panel-section">
+  <h2 class="panel-heading">Recently Added</h2>
+  <ul class="panel-list">
+    {%- for pn_doc in writings limit: 5 %}
+    {%- include doc-info.html doc=pn_doc %}
+    <li><a href="{{ pn_doc.url | relative_url }}" lang="{{ doc_lang }}"{% if pn_doc.url == page.url %} aria-current="page"{% endif %}>{{ doc_label | escape }}</a></li>
+    {%- endfor %}
+  </ul>
+</section>
+{%- endif %}
+
+<section class="panel-section">
+  <h2 class="panel-heading">Browse</h2>
+  <div class="tags">
+    {%- for pn_kind in site.kinds %}
+    <a class="tag" href="{{ pn_kind[1].url | relative_url }}">{{ pn_kind[1].en_plural | downcase }}</a>
+    {%- endfor %}
+    {%- for pn_lang in site.languages %}
+    <a class="tag" href="{{ pn_lang[1].url | relative_url }}" lang="{{ pn_lang[0] }}">{{ pn_lang[1].name }}</a>
+    {%- endfor %}
+  </div>
+</section>

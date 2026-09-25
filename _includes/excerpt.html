@@ -1,0 +1,17 @@
+{%- comment -%}
+  The opening of a piece as one line of plain text. Poem lines are joined
+  with " / ". Pass words=N to change the length (default 40).
+{%- endcomment -%}
+{%- capture ex_nl %}
+{% endcapture -%}
+{%- assign ex_words = include.words | default: 40 -%}
+{%- if include.doc.poem -%}
+  {%- assign ex_text = include.doc.poem | strip | split: ex_nl | join: " / " | normalize_whitespace | replace: " / / ", " / " | replace: " / / ", " / " -%}
+{%- elsif include.doc.story -%}
+  {%- assign ex_text = include.doc.story | normalize_whitespace -%}
+{%- elsif include.doc.about -%}
+  {%- assign ex_text = include.doc.about | normalize_whitespace -%}
+{%- else -%}
+  {%- assign ex_text = include.doc.content | strip_html | normalize_whitespace -%}
+{%- endif -%}
+{{- ex_text | strip | truncatewords: ex_words | escape -}}

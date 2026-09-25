@@ -1,0 +1,46 @@
+{%- comment -%}
+  A list of cards.
+    docs=      the pieces to show, already in order
+    filter=    "lang" or "kind": adds buttons to narrow the list, when there
+               is more than one choice (they need JavaScript, so start hidden)
+    empty=     what to say when there is nothing to show
+{%- endcomment -%}
+{%- assign cl_docs = include.docs -%}
+{%- if cl_docs.size == 0 -%}
+<p class="empty">{{ include.empty | default: "Nothing here yet." }}</p>
+{%- else -%}
+  {%- if include.filter -%}
+    {%- assign cl_seen = "" | split: "" -%}
+    {%- for cl_doc in cl_docs -%}
+      {%- if include.filter == "lang" -%}
+        {%- include doc-lang.html doc=cl_doc -%}
+        {%- assign cl_value = doc_lang -%}
+      {%- else -%}
+        {%- assign cl_value = cl_doc.collection -%}
+      {%- endif -%}
+      {%- unless cl_seen contains cl_value -%}{%- assign cl_seen = cl_seen | push: cl_value -%}{%- endunless -%}
+    {%- endfor -%}
+    {%- if cl_seen.size > 1 -%}
+      {%- if include.filter == "lang" -%}{%- assign cl_options = site.languages -%}{%- else -%}{%- assign cl_options = site.kinds -%}{%- endif %}
+<div class="chips" role="group" aria-label="Show only" data-filter="{{ include.filter }}" hidden>
+  <button type="button" class="chip" data-value="" aria-pressed="true">All</button>
+      {%- for cl_option in cl_options -%}
+        {%- if cl_seen contains cl_option[0] %}
+  <button type="button" class="chip" data-value="{{ cl_option[0] }}" aria-pressed="false">
+          {%- if include.filter == "lang" -%}
+            {{ cl_option[1].en }}{% if cl_option[1].name != cl_option[1].en %} · <span lang="{{ cl_option[0] }}">{{ cl_option[1].name }}</span>{% endif %}
+          {%- else -%}
+            {{ cl_option[1].en_plural }}
+          {%- endif -%}
+  </button>
+        {%- endif -%}
+      {%- endfor %}
+</div>
+    {%- endif -%}
+  {%- endif %}
+<div class="card-list">
+  {%- for cl_doc in cl_docs %}
+  {% include card.html doc=cl_doc %}
+  {%- endfor %}
+</div>
+{%- endif -%}
